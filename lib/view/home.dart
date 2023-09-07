@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class MyHome extends StatefulWidget {
-  const MyHome({super.key});
+   const MyHome({Key? key}) : super(key: key);
 
   @override
   State<MyHome> createState() => _MyWidgetState();
@@ -13,14 +14,14 @@ class _MyWidgetState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     
-    var city_name =["Bankok","Delhi","Asia","London","USA","China"];
-    final _random = new Random();
-    var city = city_name[_random.nextInt(city_name.length)]; 
-    List<String> navbar_item =["TopNews","Health","Finance","Cricket","Devotion"];
+    var cityName =  ["Bankok","Delhi","Asia","London","USA","China"];
+    final random = Random();
+    var city = cityName[random.nextInt(cityName.length)]; 
+    List<String> navbarItem =["TopNews","Health","Finance","Cricket","Devotion"];
  
     return  Scaffold(
         appBar: AppBar(
-          title: Text("News-Ley"),
+          title: const Text("News-Ley"),
           centerTitle: true,
           backgroundColor: const Color.fromARGB(255, 163, 214, 255),
         ),
@@ -29,19 +30,25 @@ class _MyWidgetState extends State<MyHome> {
             children: [
              Container(
                
-                padding: EdgeInsets.symmetric(horizontal:8.0),
-                margin: EdgeInsets.symmetric(horizontal:24,vertical: 20),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal:8.0),
+                margin: const EdgeInsets.symmetric(horizontal:24,vertical: 20),
+                decoration: const BoxDecoration(
              
                    color: Colors.transparent,
                   
                    ),
                 child: Row(
                  children: [
-                     GestureDetector(
-                       onTap: ()=>{},
-                       child:Container(child:Icon(Icons.search,color: Colors.lightBlue,),margin: EdgeInsets.fromLTRB(3, 0, 7, 0),),
-                     ),
+                    GestureDetector(
+                      onTap: () => {},
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(3, 0, 7, 0),
+                        child: const Icon(
+                          Icons.search,
+                          color: Colors.lightBlue,
+                        ),
+                      ),
+                    ),
                      Expanded(
                       child: TextField(
                          controller: SearchController(),
@@ -59,22 +66,22 @@ class _MyWidgetState extends State<MyHome> {
              
               //Navbar Creation ...
 
-              Container(
+              SizedBox(
                 height: 50,
                 
               child:ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemCount: navbar_item.length,
+                itemCount: navbarItem.length,
                 itemBuilder:(context,index){
                 return 
                InkWell(
                         onTap: ()=>{
-                            print(navbar_item[index]),
+                            debugPrint(navbarItem[index]),
                         },
                    child: Container(
-                       padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-                       margin: EdgeInsets.symmetric(horizontal:5),
+                       padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                       margin: const EdgeInsets.symmetric(horizontal:5),
                        decoration:BoxDecoration(
                           color: Colors.blueAccent,
                           borderRadius: BorderRadius.circular(25),
@@ -82,8 +89,8 @@ class _MyWidgetState extends State<MyHome> {
 
                        child:Center(
                        child: Text(
-                           navbar_item[index],
-                           style: TextStyle(
+                           navbarItem[index],
+                           style: const TextStyle(
                             fontSize: 15,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -96,11 +103,42 @@ class _MyWidgetState extends State<MyHome> {
                 }
 
               ) ,
-             )
-              
+             ),
+
+             CarouselSlider(
+                     options: CarouselOptions(
+                        height: 200.0,
+                        autoPlay: true,
+                        enableInfiniteScroll: false,
+                        enlargeCenterPage: true
+                     ),
+                       
+                     items: items.map((i) {
+                       return Builder(
+                         builder: (BuildContext context) {
+                           return InkWell(
+                            onTap: ()=>{
+                               debugPrint("Animesh Want to see news "),
+                            },
+                           child :Container(
+                           //  width: MediaQuery.of(context).size.width,
+                             margin: const EdgeInsets.symmetric(horizontal: 5.0,vertical: 14),
+                             decoration: BoxDecoration(
+                               color: i,
+                             ),
+                            
+                           ),
+                           );
+                         },
+                       );
+                     }).toList(),
+               ) 
             
             ],
+
+
         ),
     );
   }
+   final List items = [Colors.orange,Colors.black,Colors.blueAccent,Colors.red,Colors.green];
 }
