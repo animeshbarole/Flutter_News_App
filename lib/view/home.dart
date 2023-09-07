@@ -14,11 +14,10 @@ class _MyWidgetState extends State<MyHome> {
   Widget build(BuildContext context) {
     
     var city_name =["Bankok","Delhi","Asia","London","USA","China"];
-
     final _random = new Random();
     var city = city_name[_random.nextInt(city_name.length)]; 
-
-     
+    List<String> navbar_item =["TopNews","Health","Finance","Cricket","Devotion"];
+ 
     return  Scaffold(
         appBar: AppBar(
           title: Text("News-Ley"),
@@ -57,6 +56,49 @@ class _MyWidgetState extends State<MyHome> {
                   ],
                 ) , 
               ),
+             
+              //Navbar Creation ...
+
+              Container(
+                height: 50,
+                
+              child:ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: navbar_item.length,
+                itemBuilder:(context,index){
+                return 
+               InkWell(
+                        onTap: ()=>{
+                            print(navbar_item[index]),
+                        },
+                   child: Container(
+                       padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                       margin: EdgeInsets.symmetric(horizontal:5),
+                       decoration:BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(25),
+                       ) ,
+
+                       child:Center(
+                       child: Text(
+                           navbar_item[index],
+                           style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                           ),
+                           ),
+                           
+                         ),
+                    ),
+                 );
+                }
+
+              ) ,
+             )
+              
+            
             ],
         ),
     );
