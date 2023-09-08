@@ -26,6 +26,7 @@ linter:
     - avoid_print
     - sized_box_for_whitespace
     - sort_child_properties_last
+    - depend_on_referenced_packages
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -1,7 +1,12 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:my_app/model/model.dart';
+import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
+
+
 
 class MyHome extends StatefulWidget {
   const MyHome({Key? key}) : super(key: key);
@@ -13,9 +18,12 @@ class MyHome extends StatefulWidget {
 class _MyWidgetState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
+
+
     var cityName = ["Bankok", "Delhi", "Asia", "London", "USA", "China"];
     final random = Random();
     var city = cityName[random.nextInt(cityName.length)];
+    List<NewsQueryModel> newsModelList = <NewsQueryModel>[];
     List<String> navbarItem = [
       "TopNews",
       "Health",
@@ -24,6 +32,37 @@ class _MyWidgetState extends State<MyHome> {
       "Devotion"
     ];
 
+   
+     Future<void> getNewsByQuery(String query) async {
+   
+      final url = Uri.parse("https://newsapi.org/v2/everything?q=tesla&from=2023-08-08&sortBy=publishedAt&apiKey=43031493986f4ecabe0c218c63472343");
+      
+      try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final articles = jsonData["articles"] as List<dynamic>;
+
+        setState(() {
+          newsModelList.clear(); // Clear the list before adding new data
+
+          for (var element in articles) {
+            final newsQueryModel = NewsQueryModel.fromJson(element);
+            newsModelList.add(newsQueryModel);
+          }
+        });
+      } else {
+        // Handle error here if the request is not successful
+        debugPrint('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle exceptions here
+      debugPrint('Error: $e');
+    }
+     
+}
+  
     return Scaffold(
       appBar: AppBar(
         title: const Text("News-Ley"),
@@ -178,7 +217,7 @@ class _MyWidgetState extends State<MyHome> {
                   ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: 3,
+                  itemCount: newsModelList.length,
                   itemBuilder: (context, index) {
                     return Container(
                         margin: const EdgeInsets.symmetric(
@@ -195,7 +234,7 @@ class _MyWidgetState extends State<MyHome> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
-                                child: Image.asset("assets/images/news.jpg"),
+                                child: Image.network(newsModelList[index].newsImg),
                               ),
                                Positioned(
                                   left: 0,
@@ -203,14 +242,29 @@ class _MyWidgetState extends State<MyHome> {
                                   bottom: 0,
                                   child: Container(
 
-                                    padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                                    child: const Text(
-                                    "News HeadLine",
-                                    style: TextStyle(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      gradient: LinearGradient(colors: [
+                                        Colors.black12.withOpacity(0),
+                                        Colors.black
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter
+                                      )
+                                    ), 
+                                    padding: const EdgeInsets.fromLTRB(15,15,10,8),
+                                    child:  Column( 
+                                    children:[
+                                    Text(
+                                       newsModelList[index].newsHead,
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                         fontSize: 14),
-                                  ))),
+                                  ),
+                                 
+                                ] 
+                               ))),
                             ],
                           ),
                         ));
