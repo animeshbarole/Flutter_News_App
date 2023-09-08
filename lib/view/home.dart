@@ -66,8 +66,9 @@ class _MyWidgetState extends State<MyHome> {
 
             //Navbar Creation ...
 
-            SizedBox(
+            Container(
               height: 50,
+              
               child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -100,7 +101,11 @@ class _MyWidgetState extends State<MyHome> {
                   }),
             ),
 
-            CarouselSlider(
+            Container(  
+             
+             margin: const EdgeInsets.symmetric(vertical: 15),
+
+            child: CarouselSlider(
               options: CarouselOptions(
                   height: 200.0,
                   autoPlay: true,
@@ -109,26 +114,68 @@ class _MyWidgetState extends State<MyHome> {
               items: items.map((i) {
                 return Builder(
                   builder: (BuildContext context) {
-                    return InkWell(
-                      onTap: () => {
-                        debugPrint("Animesh Want to see news "),
-                      },
-                      child: Container(
-                        //  width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 14),
-                        decoration: BoxDecoration(
-                          color: i,
-                        ),
+                    return Container(
+                    
+                      child: Card(
+                         shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                         ),
+                        child: Stack(
+                          
+                          children: [
+                             
+                             ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset("assets/images/news.jpg",fit: BoxFit.fitHeight,height: double.infinity,),
+                             ),
+                             Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                   decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: LinearGradient(
+                                       begin: Alignment.topCenter,
+                                       end: Alignment.bottomCenter,
+                                        colors: [Colors.greenAccent.withOpacity(0),
+                                                  Colors.green
+                                               ],
+                                      
+                                    )
+                                   ),
+                                  child: Container(
+                                    padding: const  EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                                    child: const Text("Current News HeadLine",style:TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white),), 
+                             ))),
+                          ],
+                        ) 
                       ),
                     );
                   },
                 );
               }).toList(),
             ),
+          ),
 
             Container(
-              child: ListView.builder(
+              
+              child : Column(
+              children :[ 
+
+                Container(
+                 margin: const EdgeInsets.fromLTRB(15, 25, 0, 0),
+                  child : const Row(
+                  
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                                     
+                            Text  ("Latest News Updates",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black)), 
+                  ],
+                 ),
+                ),
+                
+                  ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: 3,
@@ -168,7 +215,23 @@ class _MyWidgetState extends State<MyHome> {
                           ),
                         ));
                   }),
-            ),
+
+                Container(
+                      // Set a specific height to constrain the button
+                     margin:const EdgeInsets.fromLTRB(0, 5, 0, 10),
+
+                     child: ElevatedButton(
+                      
+                       onPressed: () {
+                         // Button's onPressed logic
+                       },
+                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue, // Set the background color here
+                         ),
+                        child:const Text('Show More',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 18)),
+                     ),
+                   )
+          ])),
           ],
         ),
       ),
