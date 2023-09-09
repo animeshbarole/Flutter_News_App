@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
@@ -26,7 +28,23 @@ class _CategoryState extends State<Category> {
     String url;
     if (query == "Top News") {
       url = "https://newsapi.org/v2/top-headlines?country=in&category=general&apiKey=43031493986f4ecabe0c218c63472343";
-    } else {
+    } else if(query=="Business"){
+      url = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=43031493986f4ecabe0c218c63472343";
+    }
+    else if(query=="Entertainment") {
+      url = "https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=43031493986f4ecabe0c218c63472343";
+    }
+   else if(query=="Sports") {
+      url = "https://newsapi.org/v2/top-headlines?country=in&category=sports&apiKey=43031493986f4ecabe0c218c63472343";
+    }
+   else if(query=="Technology"){
+      url = "https://newsapi.org/v2/top-headlines?country=in&category=technology&apiKey=43031493986f4ecabe0c218c63472343";
+    }
+   else if(query=="Health"){
+      url = "https://newsapi.org/v2/top-headlines?country=in&category=health&apiKey=43031493986f4ecabe0c218c63472343";
+    }
+    else 
+    {
       url = "https://newsapi.org/v2/everything?q=$query&apiKey=43031493986f4ecabe0c218c63472343";
     }
 
@@ -72,15 +90,21 @@ class _CategoryState extends State<Category> {
               child : Column(
               children :[ 
 
+               const SizedBox(width: 15,),
                 Container(
                  margin: const EdgeInsets.fromLTRB(15, 25, 0, 0),
                   child : Row(
                   
-                  mainAxisAlignment: MainAxisAlignment.start,
+                   mainAxisAlignment: MainAxisAlignment.start,
+                 
                   children: [
-                                     
-                            Text( widget.query ,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black)), 
-                  ],
+                             
+                           Container( 
+                            margin: const EdgeInsets.symmetric(vertical: 15),
+                            child :Text( widget.query ,
+                            style: const  TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.black)
+                            ), 
+                   )],
                  ),
                 ),
                 

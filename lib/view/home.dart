@@ -62,6 +62,7 @@ class _MyWidgetState extends State<MyHome> {
             final newsQueryModel = NewsQueryModel.fromJson(element);
             newsModelList.add(newsQueryModel);
           }
+          isLoading = false;
         });
       } else {
         // Handle error here if the request is not successful
@@ -71,6 +72,7 @@ class _MyWidgetState extends State<MyHome> {
       // Handle exceptions here
       debugPrint('Error: $e');
     }
+     
   }
   
    Future<void> getNewsByCountry() async {
@@ -90,6 +92,7 @@ class _MyWidgetState extends State<MyHome> {
             final newsQueryModel = NewsQueryModel.fromJson(element);
             newsCountry.add(newsQueryModel);
           }
+          isLoading = false;
         });
       } else {
         // Handle error here if the request is not successful
@@ -183,7 +186,7 @@ class _MyWidgetState extends State<MyHome> {
             Container(  
              
              margin: const EdgeInsets.symmetric(vertical: 15),
-             child: CarouselSlider(
+             child:isLoading ?Center(child:CircularProgressIndicator()):CarouselSlider  (
               options: CarouselOptions(
                   height: 200.0,
                   autoPlay: true,
