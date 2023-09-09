@@ -16,14 +16,12 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MyHome> {
-  @override
-  Widget build(BuildContext context) {
 
 
     var cityName = ["Bankok", "Delhi", "Asia", "London", "USA", "China"];
     final random = Random();
-    var city = cityName[random.nextInt(cityName.length)];
-    List<NewsQueryModel> newsModelList = <NewsQueryModel>[];
+    //var city = cityName[random.nextInt(cityName.length)];
+  
     List<String> navbarItem = [
       "TopNews",
       "Health",
@@ -33,12 +31,20 @@ class _MyWidgetState extends State<MyHome> {
     ];
 
    
-     Future<void> getNewsByQuery(String query) async {
-   
-      final url = Uri.parse("https://newsapi.org/v2/everything?q=tesla&from=2023-08-08&sortBy=publishedAt&apiKey=43031493986f4ecabe0c218c63472343");
-      
-      try {
-      final response = await http.get(url);
+     bool isLoading = true;
+      List<NewsQueryModel> newsModelList = <NewsQueryModel>[];
+
+  @override
+  void initState() {
+    super.initState();
+    getNewsByQuery("bitcoin");
+  }
+
+  Future<void> getNewsByQuery(String query) async {
+    String url = "https://newsapi.org/v2/everything?q=$query&apiKey=43031493986f4ecabe0c218c63472343";
+    
+    try {
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
@@ -60,9 +66,9 @@ class _MyWidgetState extends State<MyHome> {
       // Handle exceptions here
       debugPrint('Error: $e');
     }
-     
-}
-  
+  }
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("News-Ley"),
@@ -94,9 +100,9 @@ class _MyWidgetState extends State<MyHome> {
                     child: TextField(
                       controller: SearchController(),
                       textInputAction: TextInputAction.search,
-                      decoration: InputDecoration(
+                      decoration: const  InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Search $city for News"),
+                          hintText: "Search City for News"),
                     ),
                   )
                 ],
@@ -234,7 +240,20 @@ class _MyWidgetState extends State<MyHome> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
-                                child: Image.network(newsModelList[index].newsImg),
+                                child:FadeInImage.assetNetwork(
+                                   placeholder: 'assets/images/news.jpg', 
+                                   image: newsModelList[index].newsImg,
+                                   fit: BoxFit.cover, 
+                                  
+                                   imageErrorBuilder: (context, error, stackTrace) {
+                                    
+                                     return Image.asset(
+                                       'assets/images/news.jpg', // Replace with your error placeholder image asset path
+                                       fit: BoxFit.cover,
+                                      
+                                     );
+                                   },
+                                 )
                               ),
                                Positioned(
                                   left: 0,
@@ -243,7 +262,7 @@ class _MyWidgetState extends State<MyHome> {
                                   child: Container(
 
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
+                                      borderRadius: BorderRadius.circular(20),
                                       gradient: LinearGradient(colors: [
                                         Colors.black12.withOpacity(0),
                                         Colors.black

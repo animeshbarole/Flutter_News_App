@@ -17,7 +17,7 @@ class NewsQueryModel extends Equatable {
     return NewsQueryModel(
       newsHead: json["title"] ?? "NEWS HEADLINE",
       newsDes: json["description"] ?? "SOME NEWS",
-      newsImg: json["urlToImage"] ?? "SOME URL",
+      newsImg: json["urlToImage"] ?? "SOME IMAGE",
       newsUrl: json["url"] ?? "SOME URL",
     );
   }
