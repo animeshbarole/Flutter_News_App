@@ -24,6 +24,26 @@ Make sure to have the following dependencies installed in your Flutter project:
 ```
 git clone https://github.com/yourusername/newsapi-flutter-app.git
 ```
+2. Install the dependencies:
+````
+flutter pub get
+````
+3.Run the app:
+````
+flutter run
+
+`````
+## Configration
+To use this app, you'll need to obtain an API key from NewsAPI and replace 'YOUR_API_KEY' in the code with your actual API key.
+``````
+final apiKey = 'YOUR_API_KEY';
+final apiUrl = 'https://newsapi.org/v2/';
+``````
+
+## Contributing
+Contributions are welcome! Please create a pull request or open an issue if you find any bugs or want to enhance the app.
+
+
 
 
 
