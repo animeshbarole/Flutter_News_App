@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/model/newsModel.dart';
@@ -20,9 +22,7 @@ class MyHome extends StatefulWidget {
 class _MyWidgetState extends State<MyHome> {
 
 
-    var cityName = ["Bankok", "Delhi", "Asia", "London", "USA", "China"];
-    final random = Random();
-    //var city = cityName[random.nextInt(cityName.length)];
+ 
   
     List<String> navbarItem = [
       "Top News",
@@ -35,14 +35,52 @@ class _MyWidgetState extends State<MyHome> {
 
    
      bool isLoading = true;
+      TextEditingController searchController = new TextEditingController();
       List<NewsQueryModel> newsModelList = <NewsQueryModel>[];
       List<NewsQueryModel> newsCountry = <NewsQueryModel>[];
-
+  String query = " ";
   @override
   void initState() {
     super.initState();
     getNews();
     getNewsByCountry();
+  }
+  void updateQuery(String newQuery) {
+    setState(() {
+      query = newQuery;
+    });
+    
+     getNewsWithQuery(query);
+  }
+
+  Future<void> getNewsWithQuery(String para) async {
+    String url = "https://newsapi.org/v2/everything?q=$para&apiKey=43031493986f4ecabe0c218c63472343";
+    
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final articles = jsonData["articles"] as List<dynamic>;
+
+        setState(() {
+          newsModelList.clear(); // Clear the list before adding new data
+
+          for (var element in articles) {
+            final newsQueryModel = NewsQueryModel.fromJson(element);
+            newsModelList.add(newsQueryModel);
+          }
+          isLoading = false;
+        });
+      } else {
+        // Handle error here if the request is not successful
+        debugPrint('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle exceptions here
+      debugPrint('Error: $e');
+    }
+     
   }
 
   Future<void> getNews() async {
@@ -125,7 +163,14 @@ class _MyWidgetState extends State<MyHome> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () => {},
+                    onTap: () => {
+                      if((searchController.text).replaceAll(" ","")==""){
+                         
+                      }
+                      else{
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Category(query: searchController.text))),
+                      }
+                    },
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(3, 0, 7, 0),
                       child: const Icon(
@@ -136,11 +181,14 @@ class _MyWidgetState extends State<MyHome> {
                   ),
                   Expanded(
                     child: TextField(
-                      controller: SearchController(),
+                      controller: searchController,
                       textInputAction: TextInputAction.search,
+                      onSubmitted: (value) => {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Category(query: value))),
+                      },
                       decoration: const  InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Search City for News"),
+                          hintText: "Search News"),
                     ),
                   )
                 ],
@@ -162,7 +210,7 @@ class _MyWidgetState extends State<MyHome> {
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
+                           horizontal: 20, vertical: 5),
                         margin: const EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
                           color: Colors.blueAccent,
@@ -186,7 +234,7 @@ class _MyWidgetState extends State<MyHome> {
             Container(  
              
              margin: const EdgeInsets.symmetric(vertical: 15),
-             child:isLoading ?Center(child:CircularProgressIndicator()):CarouselSlider  (
+             child:isLoading ?const Center(child:CircularProgressIndicator()):CarouselSlider  (
               options: CarouselOptions(
                   height: 200.0,
                   autoPlay: true,
@@ -198,16 +246,20 @@ class _MyWidgetState extends State<MyHome> {
                   builder: (BuildContext context) {
                     
                     return Container(
-                    
+                      padding: const  EdgeInsets.symmetric(vertical: 0.0),
+                      
+                      
+                      
                       child: Card(
+                        
                          shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                          ),
+                         
                         child: Stack(
                           
                           children: [
-                           
-                           ClipRRect(
+                            ClipRRect(
                                    borderRadius: BorderRadius.circular(10),
                                    child: CachedNetworkImage(
                                      placeholder: (context, url) => Image.asset(
@@ -241,7 +293,7 @@ class _MyWidgetState extends State<MyHome> {
                                    ),
                                   child: Container(
                                     padding: const  EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-                                    child:  Text(instance.newsHead,style:TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white),), 
+                                    child:  Text(instance.newsHead,style:const TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white),), 
                              ))),
                           ],
                         ) 
@@ -270,74 +322,85 @@ class _MyWidgetState extends State<MyHome> {
                  ),
                 ),
                 
-                  ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: newsModelList.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                              color: Colors.greenAccent,
-                            ),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          elevation: 1.0,
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(20.0),
-                                child:FadeInImage.assetNetwork(
-                                   placeholder: 'assets/images/news.jpg', 
-                                   image: newsModelList[index].newsImg,
-                                   fit: BoxFit.cover, 
-                                 
-                                   imageErrorBuilder: (context, error, stackTrace) {
-                                    
-                                     return Image.asset(
-                                       'assets/images/news.jpg', // Replace with your error placeholder image asset path
-                                       fit: BoxFit.cover,
-                                  
-                                     );
-                                   },
-                                 )
-                              ),
-                               Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  child: Container(
-
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      gradient: LinearGradient(colors: [
-                                        Colors.black12.withOpacity(0),
-                                        Colors.black
-                                      ],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter
-                                      )
-                                    ), 
-                                    padding: const EdgeInsets.fromLTRB(15,15,10,8),
-                                    child:  Column( 
-                                    children:[
-                                    Text(
-                                       newsModelList[index].newsHead,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 14),
-                                  ),
-                                 
-                                ] 
-                               ))),
-                            ],
-                          ),
-                        ));
-                  }),
+                ListView.builder(
+                     physics: const NeverScrollableScrollPhysics(),
+                     shrinkWrap: true,
+                     itemCount: newsModelList.length,
+                     itemBuilder: (context, index) {
+                       return Container(
+                         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                         child: Card(
+                           shape: RoundedRectangleBorder(
+                             side: const BorderSide(
+                               color: Colors.greenAccent,
+                             ),
+                             borderRadius: BorderRadius.circular(20.0),
+                           ),
+                           elevation: 1.0,
+                           child: GestureDetector(
+                              onTap: () async {
+    // Handle tap action here to open the URL in a web browser
+                                    final url = Uri.parse(newsModelList[index].newsUrl);
+                                        if (await canLaunchUrl(url)) {
+                                          await launchUrl(url);
+                                        } else {
+                                          throw 'Could not launch $url';
+                                        }
+                                    },
+                             child: Stack(
+                               children: [
+                                 ClipRRect(
+                                   borderRadius: BorderRadius.circular(20.0),
+                                   child: FadeInImage.assetNetwork(
+                                     placeholder: 'assets/images/news.jpg',
+                                     image: newsModelList[index].newsImg,
+                                     fit: BoxFit.cover,
+                                     imageErrorBuilder: (context, error, stackTrace) {
+                                       return Image.asset(
+                                         'assets/images/news.jpg', // Replace with your error placeholder image asset path
+                                         fit: BoxFit.cover,
+                                       );
+                                     },
+                                   ),
+                                 ),
+                                 Positioned(
+                                   left: 0,
+                                   right: 0,
+                                   bottom: 0,
+                                   child: Container(
+                                     decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(20),
+                                       gradient: LinearGradient(
+                                         colors: [
+                                           Colors.black12.withOpacity(0),
+                                           Colors.black
+                                         ],
+                                         begin: Alignment.topCenter,
+                                         end: Alignment.bottomCenter,
+                                       ),
+                                     ),
+                                     padding: const EdgeInsets.fromLTRB(15, 15, 10, 8),
+                                     child: Column(
+                                       children: [
+                                         Text(
+                                           newsModelList[index].newsHead,
+                                           style: const TextStyle(
+                                             fontWeight: FontWeight.bold,
+                                             color: Colors.white,
+                                             fontSize: 14,
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+                                   ),
+                                 ),
+                               ],
+                             ),
+                           ),
+                         ),
+                       );
+                     },
+                   ),
 
                 Container(
                       // Set a specific height to constrain the button
@@ -346,7 +409,7 @@ class _MyWidgetState extends State<MyHome> {
                      child: ElevatedButton(
                       
                        onPressed: () {
-                         // Button's onPressed logic
+                           Navigator.push(context, MaterialPageRoute(builder:(context)=>Category(query:"General")));
                        },
                          style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue, // Set the background color here
