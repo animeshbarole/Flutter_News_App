@@ -1,16 +1,22 @@
-# my_app
+# NewsAPI Flutter Application
 
-A new Flutter project.
+This is a Flutter application that allows you to fetch and read news articles from various sources online using the NewsAPI.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Search for news articles by keywords.
+- Browse top headlines from different news sources.
+- View news details and read full articles.
+- ...
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Dependencies
+
+Make sure to have the following dependencies installed in your Flutter project:
+
+- [http](https://pub.dev/packages/http): For making HTTP requests to the NewsAPI.
+- [cached_network_image](https://pub.dev/packages/cached_network_image): For caching and displaying network images efficiently.
+- [url_launcher](https://pub.dev/packages/url_launcher): For opening URLs in the device's web browser.
+- ...
+
